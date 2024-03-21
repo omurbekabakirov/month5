@@ -31,7 +31,11 @@ class Review(models.Model):
         related_name='reviews'
     )
     text = models.TextField()
+    stars = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Review for {self.product.title}"
+
+    def rating(self):
+        ...
