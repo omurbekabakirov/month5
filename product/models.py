@@ -15,9 +15,10 @@ class Product(models.Model):
     price = models.FloatField(default=0, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    categories = models.ManyToManyField(
+    categories = models.ForeignKey(
         Category,
-        related_name='product'
+        on_delete=models.CASCADE,
+        related_name='products'
     )
 
     def __str__(self):
@@ -31,11 +32,8 @@ class Review(models.Model):
         related_name='reviews'
     )
     text = models.TextField()
-    stars = models.IntegerField(default=1)
+    stars = models.IntegerField(default=1, choices=[(i, i) for i in range(1, 6)])
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Review for {self.product.title}"
-
-    def rating(self):
-        ...
