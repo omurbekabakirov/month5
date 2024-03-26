@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from product.models import Product, Category, Review
@@ -7,9 +8,17 @@ from rest_framework import status
 
 @api_view(['GET', 'POST'])
 def product_list_api_view(request):
-    product_list = Product.objects.all()
-    data = ProductSerializer(product_list, many=True).data
-    return Response(data=data)
+    if request.method == 'GET':
+        product_list = Product.objects.all()
+        data = ProductSerializer(product_list, many=True).data
+        return Response(data=data)
+    elif request.method == 'POST':
+        serializer = ProductSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer, status=status.HTTP_201_CREATED)
+
+
 
 
 @api_view(['GET'])
@@ -19,7 +28,7 @@ def product_list_with_review_api_view(request):
         data = Product2Serializer(product_list, many=True).data
         return Response(data=data)
     elif request.method == 'POST':
-        product_serializer = CategorySerializer(data=request.data)
+        product_serializer = Product2Serializer(data=request.data)
         product_serializer.is_valid(raise_exception=True)
         product_serializer.save()
         return Response(data=product_serializer, status=status.HTTP_201_CREATED)
@@ -35,7 +44,7 @@ def product_detail_api_view(request, id):
     elif request.method == 'PUT':
         serializer = ProductSerializer(queryset)
         serializer.save()
-        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'DELETE':
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
