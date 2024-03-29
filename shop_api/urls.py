@@ -1,10 +1,11 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from product.views import (product_list_api_view, product_detail_api_view, category_list_api_view,
                            category_detail_api_view, review_detail_api_view, review_list_api_view,
                            product_list_with_review_api_view)
 
 urlpatterns = [
+    path('', include('users.urls')),
     path('admin/', admin.site.urls),
     path('api/v1/products/', product_list_api_view),
     path('api/v1/products/<int:id>/', product_detail_api_view),
